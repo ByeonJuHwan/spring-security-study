@@ -7,4 +7,4 @@
 
 스프링 시큐리티에서 필요한 인터페이스및 인터페이스를 상속받아 구현해야하는 메소들의 정리 및 실제 http 요청이 들어왔을때 어떻게 스프링 시큐리티에서 사용자를 인증하는지 정리했습니다.
 
-[스프링 시큐리티 기본 구성](https://github.com/ByeonJuHwan/spring-security-study/blob/master/docs/spring-security-basic.md).
+[스프링 시큐리티 기본 구성](https://github.com/ByeonJuHwan/spring-security-study/blob/master/docs/spring-security-basic.md)
