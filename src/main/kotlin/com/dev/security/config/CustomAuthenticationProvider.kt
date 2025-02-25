@@ -5,7 +5,7 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.Authentication
 import org.springframework.stereotype.Component
 
-@Component
+//@Component
 class CustomAuthenticationProvider : AuthenticationProvider{
     // 인증 논리 추가 메소드
     override fun authenticate(authentication: Authentication?): Authentication {
