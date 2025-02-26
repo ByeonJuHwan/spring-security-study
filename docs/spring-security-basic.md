@@ -158,7 +158,7 @@ public interface UserDetails extends Serializable {
 
 JdbcUserDetailsManager 는 UserDetailsManager 를 구현하고 있으며, UserDetailsService 를 상속받아 구현하고 있다.
 
-```java
+```kotlin
 @Bean
 fun userDetailsService(dataSource: DataSource): UserDetailsService {
     return JdbcUserDetailsManager(dataSource)
