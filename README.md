@@ -8,3 +8,10 @@
 스프링 시큐리티에서 필요한 인터페이스및 인터페이스를 상속받아 구현해야하는 메소들의 정리 및 실제 http 요청이 들어왔을때 어떻게 스프링 시큐리티에서 사용자를 인증하는지 정리했습니다.
 
 [스프링 시큐리티 기본 구성](https://github.com/ByeonJuHwan/spring-security-study/blob/master/docs/spring-security-basic.md)
+
+암호화가 필요한 항목의 경우 스프링 시큐리티에서 제공하는 PasswordEncoder 를 사용하여 암호화를 진행합니다.
+
+API 요청으로 들어오는 필드중 암호화가 필요한 필드가 있다면 해당 암호화해야하는데 이를 AOP 를 통해서 어노테이션이 붙어 있는 필드만 처리할 수 있습니다.
+
+
+[PasswordEncoder 로 필드 암호화 하기](https://github.com/ByeonJuHwan/spring-security-study/blob/master/docs/passwordEncoder.md)
