@@ -106,3 +106,99 @@ AuthenticationManager 는 사용 가능한 인증 공급자 중 하나에 인증
 1. AuthenticationProvider 계약을 구현하는 클래스를 선언
 2. 커스텀 AuthenticationProvider 가 어떤 종류의 Authentication 객체를 지원할지 결정 (supports(), authenticate()  메소드 구현)
 3. 커스텀 AuthenticationProvider 구현 인스턴스를 스프링 시큐리티에 등록
+
+실제 코드 구현 시에는 아래와 같이 가능하다
+- @Component 어노테이션을 사용하여 스프링 빈으로 등록
+- CustomAuthenticationProvider 는 UsernamePasswordAuthenticationToken 를 지원한다
+- UsernamePasswordAuthenticationToken 은 사용자 아이디와 암호를 이용하는 표준 인증 요청을 나타낸다.
+
+```kotlin
+@Component
+class CustomAuthenticationProvider : AuthenticationProvider{
+    // 인증 논리 추가 메소드
+    override fun authenticate(authentication: Authentication?): Authentication {
+        return UsernamePasswordAuthenticationToken(null,null,null)
+    }
+
+    // 인증 형식의 구현을 추가하는 메소드
+    override fun supports(authentication: Class<*>?): Boolean {
+       return UsernamePasswordAuthenticationToken::class.java.isAssignableFrom(authentication!!)
+    }
+}
+```
+AuthenticationProvider 의 authenticate() 를 구현하기에 앞서 설정 클래스를 생성한다.
+
+- @Configuration 어노테이션을 사용하여 설정 클래스로 지정
+- PasswordEncoder 로는 NoOpPasswordEncoder 를 사용한다
+- UserDetailsService 로는 InMemoryUserDetailsManager 를 사용한다
+
+```kotlin
+@Bean
+fun userDetailsService(): UserDetailsService {
+    return InMemoryUserDetailsManager()
+}
+
+@Bean
+fun passwordEncoder(): PasswordEncoder {
+    return NoOpPasswordEncoder.getInstance()
+}
+```
+
+빈등록이 끝났으면 UserDetailsService 와 PasswordEncoder 를 의존성 주입하고
+조회한 사용자의 비밀번호와 입력받은 비밀번호를 passwordEncoder 를 이용하여 비교한다.
+만약 matches() 에서 false 가 반환되면 BadCredentialsException 을 던진다.
+true 가 반환되면 Authentication 의 authenticated 를 true 로 설정하고 반환한다.
+
+```kotlin
+@Component
+class CustomAuthenticationProvider (
+    private val userDetailsService: UserDetailsService,
+    private val passwordEncoder: PasswordEncoder,
+) : AuthenticationProvider{
+    // 인증 논리 추가 메소드
+    override fun authenticate(authentication: Authentication?): Authentication {
+        val username = authentication?.name
+        val password = authentication?.credentials.toString()
+
+        val user = userDetailsService.loadUserByUsername(username)
+        
+        if(passwordEncoder.matches(password, user.password)){
+            return UsernamePasswordAuthenticationToken(user,password,user.authorities)
+        }
+
+        throw BadCredentialsException("Invalid password")
+    }
+
+    // 인증 형식의 구현을 추가하는 메소드
+    override fun supports(authentication: Class<*>?): Boolean {
+       return UsernamePasswordAuthenticationToken::class.java.isAssignableFrom(authentication!!)
+    }
+}
+```
+Authentication 의 authenticated 를 true 로 설정하는 부분은 UsernamePasswordAuthenticationToken 생성자를 보면 기본으로 생성시 true 가 되도록 되어있다.
+
+```java
+public UsernamePasswordAuthenticationToken(Object principal, Object credentials, Collection<? extends GrantedAuthority> authorities) {
+    super(authorities);
+    this.principal = principal;
+    this.credentials = credentials;
+    super.setAuthenticated(true);
+}
+```
+
+이렇게 커스텀하게 만든 AuthenticationProvider 를 사용하려면 SecurityFilterChain 에 대한 Bean 을 등록하여 설정 가능하다
+
+```kotlin
+@Bean
+fun securityFilterChain(http: HttpSecurity) : SecurityFilterChain{
+    http.authenticationProvider(customAuthenticationProvider)
+    return http.build()
+}
+```
+
+**AuthenticationProvider 에 의해 구현된 인증 흐름**
+
+AuthenticationProvider 는 인증 요청을 검증하기 위해 주어진 UserDetailsService 의 구현으로 사용자 세부 정보를 로드하고 PasswordEncoder 로 암호를 검증한다.
+- 사용자가 없거나 암호가 맞지 않으면 AuthenticationProvider 는 AuthenticationException 을 던진다
+
+![](https://velog.velcdn.com/images/asdcz11/post/f995db7b-9ebc-448a-bb1c-ecb231c1ed1d/image.png)
