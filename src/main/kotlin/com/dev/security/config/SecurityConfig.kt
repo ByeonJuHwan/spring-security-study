@@ -7,6 +7,7 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity
 import org.springframework.security.core.userdetails.UserDetailsService
 import org.springframework.security.crypto.password.NoOpPasswordEncoder
 import org.springframework.security.crypto.password.PasswordEncoder
+import org.springframework.security.provisioning.InMemoryUserDetailsManager
 import org.springframework.security.provisioning.JdbcUserDetailsManager
 import org.springframework.security.web.SecurityFilterChain
 import javax.sql.DataSource
@@ -15,7 +16,9 @@ import javax.sql.DataSource
  * 항상 userDetailsService 를 정의하면
  */
 @Configuration
-class SecurityConfig {
+class SecurityConfig (
+    private val customAuthenticationProvider: CustomAuthenticationProvider,
+) {
 
 //    @Bean
 //    fun userDetailsService(): UserDetailsService {
@@ -50,8 +53,8 @@ class SecurityConfig {
 //    }
 
     @Bean
-    fun userDetailsService(dataSource: DataSource): UserDetailsService {
-        return JdbcUserDetailsManager(dataSource)
+    fun userDetailsService(): UserDetailsService {
+        return InMemoryUserDetailsManager()
     }
 
     @Bean
@@ -60,14 +63,9 @@ class SecurityConfig {
     }
 
     @Bean
-    fun securityFilterChain(httpSecurity: HttpSecurity) : SecurityFilterChain{
-        httpSecurity
-            .authorizeHttpRequests { auth ->
-                auth.anyRequest().authenticated()
-            }
-            .httpBasic(withDefaults())
-
-        return httpSecurity.build()
+    fun securityFilterChain(http: HttpSecurity) : SecurityFilterChain{
+        http.authenticationProvider(customAuthenticationProvider)
+        return http.build()
     }
 
 }
