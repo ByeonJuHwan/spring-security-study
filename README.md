@@ -23,4 +23,4 @@ AuthenticationProvider는 Spring Security에서 사용자 인증을 처리하는
 
 위 내용들을 토대로 인증을 성공하면 인증된 사용자 정보는 SecurityContext 에 저장되고 요청이 들어올때 마다 SecurityContext 에서 인증 정보를 가져와 사용자 정보를 사용할 수 있습니다.
 
-[SecurityContext 에서 인증 정보 가져오기]()
+[SecurityContext 알아보기](https://github.com/ByeonJuHwan/spring-security-study/blob/master/docs/security-context.md)
