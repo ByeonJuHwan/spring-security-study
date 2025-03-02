@@ -20,3 +20,7 @@ AuthenticationProvider는 Spring Security에서 사용자 인증을 처리하는
 이는 사용자의 자격 증명(credentials)을 검증하고, 인증 성공 시 필요한 권한과 세부 정보가 포함된 Authentication 객체를 생성합니다.
 
 [커스텀 AuthenticationProvider 구현](https://github.com/ByeonJuHwan/spring-security-study/blob/master/docs/authentication-provider.md)
+
+위 내용들을 토대로 인증을 성공하면 인증된 사용자 정보는 SecurityContext 에 저장되고 요청이 들어올때 마다 SecurityContext 에서 인증 정보를 가져와 사용자 정보를 사용할 수 있습니다.
+
+[SecurityContext 에서 인증 정보 가져오기]()
