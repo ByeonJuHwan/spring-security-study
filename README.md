@@ -15,3 +15,8 @@ API 요청으로 들어오는 필드중 암호화가 필요한 필드가 있다�
 
 
 [PasswordEncoder 로 필드 암호화 하기](https://github.com/ByeonJuHwan/spring-security-study/blob/master/docs/passwordEncoder.md)
+
+AuthenticationProvider는 Spring Security에서 사용자 인증을 처리하는 핵심 인터페이스입니다. 
+이는 사용자의 자격 증명(credentials)을 검증하고, 인증 성공 시 필요한 권한과 세부 정보가 포함된 Authentication 객체를 생성합니다.
+
+[커스텀 AuthenticationProvider 구현](https://github.com/ByeonJuHwan/spring-security-study/blob/master/docs/authentication-provider.md)
