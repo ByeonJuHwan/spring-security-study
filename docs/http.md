@@ -82,5 +82,3 @@ fun securityFilterChain(http: HttpSecurity) : SecurityFilterChain {
 
 위 설정 적용후 /hello API 접근하려고 하면 다시 로그인 화면으로 redirect 된다.
 - ID 는 user, 패스워드는 콘솔에 출력된 임시 패스워드를 입력하면 로그인이 성공한다.
-
-## 스프링 MVC 흐름
